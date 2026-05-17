@@ -67,7 +67,7 @@ export const createCompositionRoot = (
       new CreatePlayerController(createPlayerUseCase, createPlayerValidation),
     ),
     listPlayers: wrap(
-      new ListPlayersController(paginationValidation, listPlayersUseCase),
+      new ListPlayersController(listPlayersUseCase, paginationValidation),
     ),
     getPlayer: wrap(
       new GetPlayerController(getPlayerUseCase, playerIdValidation),
@@ -87,17 +87,23 @@ export const createCompositionRoot = (
 
 const buildDefaultPublisher = (): EventPublisher => {
   const publisher = new InMemoryEventPublisher();
-  publisher.subscribe("player.created", (e) =>
-    logger.info({ event: e.name, aggregateId: e.aggregateId }, "Player created"),
-  );
-  publisher.subscribe("player.updated", (e) =>
-    logger.info({ event: e.name, aggregateId: e.aggregateId }, "Player updated"),
-  );
-  publisher.subscribe("player.soft-deleted", (e) =>
-    logger.info(
-      { event: e.name, aggregateId: e.aggregateId },
-      "Player soft-deleted",
-    ),
-  );
+  registerLifecycleLogging(publisher);
   return publisher;
+};
+
+const LIFECYCLE_EVENT_NAMES = [
+  "player.created",
+  "player.updated",
+  "player.soft-deleted",
+] as const;
+
+const registerLifecycleLogging = (publisher: EventPublisher): void => {
+  for (const eventName of LIFECYCLE_EVENT_NAMES) {
+    publisher.subscribe(eventName, (e) =>
+      logger.info(
+        { event: e.name, aggregateId: e.aggregateId },
+        `Domain event: ${e.name}`,
+      ),
+    );
+  }
 };

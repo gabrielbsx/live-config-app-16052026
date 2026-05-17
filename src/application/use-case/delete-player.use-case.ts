@@ -1,8 +1,9 @@
 import type { UseCase } from "@/domain/contract/use-case.js";
 import type { Actor } from "@/domain/entity/actor.js";
 import { NotFoundException } from "@/application/exception/not-found.exception.js";
+import type { Player } from "@/domain/entity/player.js";
 import type { EventPublisher } from "@/domain/event/event-publisher.js";
-import type { PlayerRepository } from "@/domain/repository/player.repository.js";
+import type { Readable, Writable } from "@/domain/repository/repository.js";
 
 export type DeletePlayerInput = Readonly<{ id: string; actor: Actor }>;
 export type DeletePlayerOutput = void;
@@ -12,7 +13,7 @@ export class DeletePlayerUseCase implements UseCase<
   DeletePlayerOutput
 > {
   constructor(
-    private readonly _playerRepository: PlayerRepository,
+    private readonly _playerRepository: Readable<Player> & Writable<Player>,
     private readonly _eventPublisher: EventPublisher,
   ) {}
 

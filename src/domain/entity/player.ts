@@ -1,4 +1,4 @@
-import { DomainException } from "../exception/domain.exception.js";
+import { LevelCapExceededException } from "../exception/player.exceptions.js";
 import {
   EvolutionValueObject,
   type EvolutionStage,
@@ -33,9 +33,8 @@ export class Player extends EditableAggregate<PlayerProps, PlayerInput> {
   }
 
   protected override validateInput(input: PlayerInput): void {
-    DomainException.ensure(
-      input.level <= PLAYER_LIMITS.LEVEL_MAX,
-      `Level cap exceeded (max ${PLAYER_LIMITS.LEVEL_MAX})`,
-    );
+    if (input.level > PLAYER_LIMITS.LEVEL_MAX) {
+      throw new LevelCapExceededException(PLAYER_LIMITS.LEVEL_MAX);
+    }
   }
 }

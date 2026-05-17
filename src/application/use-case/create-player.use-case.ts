@@ -2,7 +2,7 @@ import type { UseCase } from "@/domain/contract/use-case.js";
 import type { Actor } from "@/domain/entity/actor.js";
 import { Player, type PlayerInput } from "@/domain/entity/player.js";
 import type { EventPublisher } from "@/domain/event/event-publisher.js";
-import type { PlayerRepository } from "@/domain/repository/player.repository.js";
+import type { Writable } from "@/domain/repository/repository.js";
 
 export type CreatePlayerInput = PlayerInput & Readonly<{ actor: Actor }>;
 
@@ -15,7 +15,7 @@ export class CreatePlayerUseCase implements UseCase<
   CreatePlayerOutput
 > {
   constructor(
-    private readonly _playerRepository: PlayerRepository,
+    private readonly _playerRepository: Writable<Player>,
     private readonly _eventPublisher: EventPublisher,
   ) {}
 

@@ -1,6 +1,7 @@
 import type { UseCase } from "@/domain/contract/use-case.js";
+import type { Player } from "@/domain/entity/player.js";
+import type { Readable } from "@/domain/repository/repository.js";
 import { NotFoundException } from "@/application/exception/not-found.exception.js";
-import type { PlayerRepository } from "@/domain/repository/player.repository.js";
 import { toPlayerDto, type PlayerDto } from "../dto/player.dto.js";
 
 export type GetPlayerInput = Readonly<{ id: string }>;
@@ -10,7 +11,7 @@ export class GetPlayerUseCase implements UseCase<
   GetPlayerInput,
   GetPlayerOutput
 > {
-  constructor(private readonly _playerRepository: PlayerRepository) {}
+  constructor(private readonly _playerRepository: Readable<Player>) {}
 
   async execute({ id }: GetPlayerInput): Promise<GetPlayerOutput> {
     const player = await this._playerRepository.findById(id);

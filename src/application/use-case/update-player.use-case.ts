@@ -1,9 +1,9 @@
 import type { UseCase } from "@/domain/contract/use-case.js";
 import type { Actor } from "@/domain/entity/actor.js";
 import { NotFoundException } from "@/application/exception/not-found.exception.js";
-import type { PlayerInput } from "@/domain/entity/player.js";
+import type { Player, PlayerInput } from "@/domain/entity/player.js";
 import type { EventPublisher } from "@/domain/event/event-publisher.js";
-import type { PlayerRepository } from "@/domain/repository/player.repository.js";
+import type { Readable, Writable } from "@/domain/repository/repository.js";
 
 export type UpdatePlayerInput = PlayerInput &
   Readonly<{ id: string; actor: Actor }>;
@@ -15,7 +15,7 @@ export class UpdatePlayerUseCase implements UseCase<
   UpdatePlayerOutput
 > {
   constructor(
-    private readonly _playerRepository: PlayerRepository,
+    private readonly _playerRepository: Readable<Player> & Writable<Player>,
     private readonly _eventPublisher: EventPublisher,
   ) {}
 
