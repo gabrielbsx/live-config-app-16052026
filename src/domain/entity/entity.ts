@@ -20,10 +20,14 @@ export type CreateEntityProps<TProps extends EntityProps> = Omit<
 >;
 
 export class Entity<TProps extends EntityProps> {
-  public props: TProps;
+  protected readonly _props: TProps;
 
   constructor(props: TProps) {
-    this.props = props;
+    this._props = props;
+  }
+
+  get props(): Readonly<TProps> {
+    return this._props;
   }
 
   static create<T extends Entity<P>, P extends EntityProps>(
@@ -31,8 +35,7 @@ export class Entity<TProps extends EntityProps> {
     props: CreateEntityProps<P>,
     actor: Actor,
   ): T {
-    return new this({
-      ...props,
+    const audit: EntityAuditProps & { id: string } = {
       id: randomUUID(),
       createdAt: new Date(),
       createdBy: actor.id,
@@ -40,6 +43,7 @@ export class Entity<TProps extends EntityProps> {
       updatedBy: null,
       deletedAt: null,
       deletedBy: null,
-    } as unknown as P);
+    };
+    return new this({ ...props, ...audit } as P);
   }
 }

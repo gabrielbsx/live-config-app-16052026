@@ -39,12 +39,12 @@ export class Player extends Entity<PlayerProps> {
   update(input: PlayerInput, actor: Actor): void {
     Player.assertLevelWithinCap(input.level);
 
-    this.props.name = input.name;
-    this.props.nickname = input.nickname;
-    this.props.level = input.level;
-    this.props.evolution = new EvolutionValueObject(input.evolution);
-    this.props.updatedAt = new Date();
-    this.props.updatedBy = actor.id;
+    this._props.name = input.name;
+    this._props.nickname = input.nickname;
+    this._props.level = input.level;
+    this._props.evolution = new EvolutionValueObject(input.evolution);
+    this._props.updatedAt = new Date();
+    this._props.updatedBy = actor.id;
   }
 
   private static assertLevelWithinCap(level: number): void {

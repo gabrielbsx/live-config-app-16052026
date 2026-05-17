@@ -34,7 +34,10 @@ describe("InMemoryPlayerRepository", () => {
       const player = makePlayer();
       await repo.save(player);
 
-      player.props.level = 5;
+      player.update(
+        { name: "P", nickname: "p", level: 5, evolution: "rookie" },
+        actor,
+      );
       await repo.save(player);
 
       const { items } = await repo.findByPagination(1, 10);

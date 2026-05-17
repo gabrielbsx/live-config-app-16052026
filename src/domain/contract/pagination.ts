@@ -6,7 +6,7 @@ export type PaginationResultMeta = {
 };
 
 export type PaginationResult<TModel> = {
-  items: TModel[];
+  items: readonly TModel[];
   meta: PaginationResultMeta;
 };
 
