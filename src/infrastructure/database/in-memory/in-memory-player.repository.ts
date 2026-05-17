@@ -1,6 +1,8 @@
 import type { PaginationResult } from "@/domain/contract/pagination.js";
-import type { Player } from "@/domain/entity/player.js";
+import { Player } from "@/domain/entity/player.js";
 import type { PlayerRepository } from "@/domain/repository/player.repository.js";
+
+const clone = (player: Player): Player => Player.restore({ ...player.props });
 
 export class InMemoryPlayerRepository implements PlayerRepository {
   private players: Player[] = [];
@@ -8,7 +10,7 @@ export class InMemoryPlayerRepository implements PlayerRepository {
   async findById(id: string): Promise<Player | null> {
     const found = this.players.find((p) => p.props.id === id);
     if (!found || found.isDeleted) return null;
-    return found;
+    return clone(found);
   }
 
   async findByPagination(
@@ -17,7 +19,9 @@ export class InMemoryPlayerRepository implements PlayerRepository {
   ): Promise<PaginationResult<Player>> {
     const active = this.players.filter((p) => !p.isDeleted);
     const total = active.length;
-    const items = active.slice((page - 1) * pageSize, page * pageSize);
+    const items = active
+      .slice((page - 1) * pageSize, page * pageSize)
+      .map(clone);
     return {
       items,
       meta: {
@@ -31,10 +35,11 @@ export class InMemoryPlayerRepository implements PlayerRepository {
 
   async save(model: Player): Promise<string> {
     const index = this.players.findIndex((p) => p.props.id === model.props.id);
+    const persisted = clone(model);
     if (index !== -1) {
-      this.players[index] = model;
+      this.players[index] = persisted;
     } else {
-      this.players.push(model);
+      this.players.push(persisted);
     }
     return model.props.id;
   }
