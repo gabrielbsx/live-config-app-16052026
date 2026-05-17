@@ -1,10 +1,16 @@
 import { DomainException } from "../exception/domain.exception.js";
 import {
+  PlayerCreatedEvent,
+  PlayerSoftDeletedEvent,
+  PlayerUpdatedEvent,
+} from "../event/player-events.js";
+import {
   EvolutionValueObject,
   type EvolutionStage,
 } from "../value-object/evolution.js";
 import type { Actor } from "./actor.js";
-import { Entity, type CreateEntityProps, type EntityProps } from "./entity.js";
+import { AggregateRoot } from "./aggregate-root.js";
+import { type CreateEntityProps, type EntityProps } from "./entity.js";
 import { PLAYER_LIMITS } from "./player.constants.js";
 
 export interface PlayerProps extends EntityProps {
@@ -21,11 +27,11 @@ export type PlayerInput = Readonly<{
   evolution: EvolutionStage;
 }>;
 
-export class Player extends Entity<PlayerProps> {
+export class Player extends AggregateRoot<PlayerProps> {
   static fromInput(input: PlayerInput, actor: Actor): Player {
     Player.assertLevelWithinCap(input.level);
 
-    return Player.create(
+    const player = Player.create(
       {
         name: input.name,
         nickname: input.nickname,
@@ -34,6 +40,8 @@ export class Player extends Entity<PlayerProps> {
       } satisfies CreateEntityProps<PlayerProps>,
       actor,
     );
+    player.addDomainEvent(new PlayerCreatedEvent(player.id));
+    return player;
   }
 
   update(input: PlayerInput, actor: Actor): void {
@@ -43,8 +51,14 @@ export class Player extends Entity<PlayerProps> {
     this._props.nickname = input.nickname;
     this._props.level = input.level;
     this._props.evolution = new EvolutionValueObject(input.evolution);
-    this._props.updatedAt = new Date();
-    this._props.updatedBy = actor.id;
+    this.touch(actor);
+    this.addDomainEvent(new PlayerUpdatedEvent(this.id));
+  }
+
+  override softDelete(actor: Actor): void {
+    if (this.isDeleted) return;
+    super.softDelete(actor);
+    this.addDomainEvent(new PlayerSoftDeletedEvent(this.id));
   }
 
   private static assertLevelWithinCap(level: number): void {

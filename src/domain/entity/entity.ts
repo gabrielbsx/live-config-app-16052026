@@ -30,6 +30,32 @@ export class Entity<TProps extends EntityProps> {
     return this._props;
   }
 
+  get id(): string {
+    return this._props.id;
+  }
+
+  get isDeleted(): boolean {
+    return this._props.deletedAt !== null;
+  }
+
+  equals(other: Entity<EntityProps> | null | undefined): boolean {
+    if (!other) return false;
+    if (other === this) return true;
+    if (other.constructor !== this.constructor) return false;
+    return this._props.id === other._props.id;
+  }
+
+  protected touch(actor: Actor): void {
+    this._props.updatedAt = new Date();
+    this._props.updatedBy = actor.id;
+  }
+
+  softDelete(actor: Actor): void {
+    if (this.isDeleted) return;
+    this._props.deletedAt = new Date();
+    this._props.deletedBy = actor.id;
+  }
+
   static create<T extends Entity<P>, P extends EntityProps>(
     this: new (props: P) => T,
     props: CreateEntityProps<P>,
@@ -45,5 +71,12 @@ export class Entity<TProps extends EntityProps> {
       deletedBy: null,
     };
     return new this({ ...props, ...audit } as P);
+  }
+
+  static restore<T extends Entity<P>, P extends EntityProps>(
+    this: new (props: P) => T,
+    props: P,
+  ): T {
+    return new this(props);
   }
 }

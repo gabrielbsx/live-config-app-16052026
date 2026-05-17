@@ -34,3 +34,60 @@ describe("Entity.create", () => {
     expect(a.props.id).not.toBe(b.props.id);
   });
 });
+
+describe("Entity.equals", () => {
+  it("returns true for same id, same class", () => {
+    const a = Thing.create({ label: "a" }, { id: "u" });
+    const b = Thing.restore({ ...a.props });
+    expect(a.equals(b)).toBe(true);
+  });
+
+  it("returns false for different ids", () => {
+    const a = Thing.create({ label: "a" }, { id: "u" });
+    const b = Thing.create({ label: "a" }, { id: "u" });
+    expect(a.equals(b)).toBe(false);
+  });
+
+  it("returns false for null/undefined", () => {
+    const a = Thing.create({ label: "a" }, { id: "u" });
+    expect(a.equals(null)).toBe(false);
+    expect(a.equals(undefined)).toBe(false);
+  });
+});
+
+describe("Entity.softDelete", () => {
+  it("stamps deletedAt and deletedBy", () => {
+    const thing = Thing.create({ label: "x" }, { id: "u" });
+    thing.softDelete({ id: "remover" });
+    expect(thing.isDeleted).toBe(true);
+    expect(thing.props.deletedAt).toBeInstanceOf(Date);
+    expect(thing.props.deletedBy).toBe("remover");
+  });
+
+  it("is idempotent (does not overwrite)", () => {
+    const thing = Thing.create({ label: "x" }, { id: "u" });
+    thing.softDelete({ id: "first" });
+    const firstStamp = thing.props.deletedAt;
+    thing.softDelete({ id: "second" });
+    expect(thing.props.deletedAt).toBe(firstStamp);
+    expect(thing.props.deletedBy).toBe("first");
+  });
+});
+
+describe("Entity.restore", () => {
+  it("rehydrates without regenerating id or audit", () => {
+    const props: ThingProps = {
+      id: "00000000-0000-0000-0000-000000000001",
+      label: "x",
+      createdAt: new Date("2020-01-01"),
+      createdBy: "u",
+      updatedAt: null,
+      updatedBy: null,
+      deletedAt: null,
+      deletedBy: null,
+    };
+    const thing = Thing.restore(props);
+    expect(thing.props.id).toBe(props.id);
+    expect(thing.props.createdAt).toBe(props.createdAt);
+  });
+});

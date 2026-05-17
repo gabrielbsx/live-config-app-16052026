@@ -18,4 +18,22 @@ describe("EvolutionValueObject", () => {
       (vo as unknown as { value: EvolutionStage }).value = "legend";
     }).toThrow();
   });
+
+  it("equals other VO with same value", () => {
+    const a = new EvolutionValueObject("pro");
+    const b = new EvolutionValueObject("pro");
+    expect(a.equals(b)).toBe(true);
+  });
+
+  it("not equal to VO with different value", () => {
+    const a = new EvolutionValueObject("pro");
+    const b = new EvolutionValueObject("rookie");
+    expect(a.equals(b)).toBe(false);
+  });
+
+  it("not equal to null/undefined", () => {
+    const a = new EvolutionValueObject("pro");
+    expect(a.equals(null)).toBe(false);
+    expect(a.equals(undefined)).toBe(false);
+  });
 });

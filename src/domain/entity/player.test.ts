@@ -43,4 +43,51 @@ describe("Player.fromInput", () => {
     const player = Player.fromInput(validInput, { id: "user-42" });
     expect(player.props.createdBy).toBe("user-42");
   });
+
+  it("emits PlayerCreatedEvent on creation", () => {
+    const player = Player.fromInput(validInput, actor);
+    const events = player.pullDomainEvents();
+    expect(events).toHaveLength(1);
+    expect(events[0]?.name).toBe("player.created");
+    expect(events[0]?.aggregateId).toBe(player.id);
+  });
+});
+
+describe("Player.update", () => {
+  it("touches audit and emits PlayerUpdatedEvent", () => {
+    const player = Player.fromInput(validInput, actor);
+    player.pullDomainEvents();
+
+    player.update({ ...validInput, name: "Bob" }, { id: "editor" });
+
+    expect(player.props.name).toBe("Bob");
+    expect(player.props.updatedBy).toBe("editor");
+    expect(player.props.updatedAt).toBeInstanceOf(Date);
+
+    const events = player.pullDomainEvents();
+    expect(events).toHaveLength(1);
+    expect(events[0]?.name).toBe("player.updated");
+  });
+});
+
+describe("Player.softDelete", () => {
+  it("emits PlayerSoftDeletedEvent", () => {
+    const player = Player.fromInput(validInput, actor);
+    player.pullDomainEvents();
+
+    player.softDelete({ id: "remover" });
+
+    expect(player.isDeleted).toBe(true);
+    const events = player.pullDomainEvents();
+    expect(events.map((e) => e.name)).toEqual(["player.soft-deleted"]);
+  });
+
+  it("does not re-emit when already deleted", () => {
+    const player = Player.fromInput(validInput, actor);
+    player.softDelete({ id: "remover" });
+    player.pullDomainEvents();
+
+    player.softDelete({ id: "remover" });
+    expect(player.pullDomainEvents()).toHaveLength(0);
+  });
 });
