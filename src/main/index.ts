@@ -18,6 +18,8 @@ async function main() {
   app.use(
     cors({
       origin: env.CORS_ORIGIN === "*" ? true : env.CORS_ORIGIN.split(","),
+      methods: ["GET", "POST", "PUT", "DELETE"],
+      allowedHeaders: ["Content-Type", "x-user-id"],
     }),
   );
   app.use(
