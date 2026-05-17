@@ -4,7 +4,10 @@ import { DeletePlayerUseCase } from "@/application/use-case/delete-player.use-ca
 import { GetPlayerUseCase } from "@/application/use-case/get-player.use-case.js";
 import { ListPlayersUseCase } from "@/application/use-case/list-players.use-case.js";
 import { UpdatePlayerUseCase } from "@/application/use-case/update-player.use-case.js";
-import type { EventPublisher } from "@/domain/event/event-publisher.js";
+import type {
+  EventBus,
+  EventPublisher,
+} from "@/domain/event/event-publisher.js";
 import type { PlayerRepository } from "@/domain/repository/player.repository.js";
 import { InMemoryPlayerRepository } from "@/infrastructure/database/in-memory/in-memory-player.repository.js";
 import { InMemoryEventPublisher } from "@/infrastructure/event/in-memory-event-publisher.js";
@@ -85,7 +88,7 @@ export const createCompositionRoot = (
   };
 };
 
-const buildDefaultPublisher = (): EventPublisher => {
+const buildDefaultPublisher = (): EventBus => {
   const publisher = new InMemoryEventPublisher();
   registerLifecycleLogging(publisher);
   return publisher;
@@ -97,7 +100,7 @@ const LIFECYCLE_EVENT_NAMES = [
   "player.soft-deleted",
 ] as const;
 
-const registerLifecycleLogging = (publisher: EventPublisher): void => {
+const registerLifecycleLogging = (publisher: EventBus): void => {
   for (const eventName of LIFECYCLE_EVENT_NAMES) {
     publisher.subscribe(eventName, (e) =>
       logger.info(

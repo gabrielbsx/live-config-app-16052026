@@ -1,11 +1,11 @@
 import type { DomainEvent } from "@/domain/event/domain-event.js";
 import type {
   DomainEventHandler,
-  EventPublisher,
+  EventBus,
 } from "@/domain/event/event-publisher.js";
 import { logger } from "@/infrastructure/logger/logger.js";
 
-export class InMemoryEventPublisher implements EventPublisher {
+export class InMemoryEventPublisher implements EventBus {
   private readonly _handlers = new Map<string, DomainEventHandler[]>();
 
   subscribe(eventName: string, handler: DomainEventHandler): void {

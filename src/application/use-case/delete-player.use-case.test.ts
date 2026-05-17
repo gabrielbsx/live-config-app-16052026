@@ -10,7 +10,7 @@ const actor = { id: asActorId("tester") };
 
 const makePublisher = (): EventPublisher => ({
   publish: vi.fn(async () => undefined),
-  subscribe: vi.fn(),
+
 });
 
 describe("DeletePlayerUseCase", () => {

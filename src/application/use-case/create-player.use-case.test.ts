@@ -15,7 +15,7 @@ const makeRepo = (): PlayerRepository => ({
 
 const makePublisher = (): EventPublisher => ({
   publish: vi.fn(async () => undefined),
-  subscribe: vi.fn(),
+
 });
 
 const actor = { id: asActorId("tester") };

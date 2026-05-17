@@ -13,7 +13,7 @@ const editor = { id: asActorId("editor") };
 
 const makePublisher = (): EventPublisher => ({
   publish: vi.fn(async () => undefined),
-  subscribe: vi.fn(),
+
 });
 
 describe("UpdatePlayerUseCase", () => {
