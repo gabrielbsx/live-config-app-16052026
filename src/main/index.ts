@@ -5,6 +5,7 @@ import rateLimit from "express-rate-limit";
 import { env } from "@/infrastructure/config/env.js";
 import { logger } from "@/infrastructure/logger/logger.js";
 import { actorMiddleware } from "@/infrastructure/http/express/actor.middleware.js";
+import { createCompositionRoot } from "./composition-root.js";
 import { routes } from "./routes.js";
 
 const SHUTDOWN_TIMEOUT_MS = 10_000;
@@ -31,7 +32,8 @@ async function main() {
   app.use(express.urlencoded({ extended: true, limit: "100kb" }));
   app.use(actorMiddleware);
 
-  routes(app);
+  const handlers = createCompositionRoot();
+  routes(app, handlers);
 
   const server = app.listen(env.PORT, () => {
     logger.info({ port: env.PORT, env: env.NODE_ENV }, "Server started");

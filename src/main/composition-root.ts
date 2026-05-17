@@ -4,6 +4,7 @@ import { DeletePlayerUseCase } from "@/application/use-case/delete-player.use-ca
 import { GetPlayerUseCase } from "@/application/use-case/get-player.use-case.js";
 import { ListPlayersUseCase } from "@/application/use-case/list-players.use-case.js";
 import { UpdatePlayerUseCase } from "@/application/use-case/update-player.use-case.js";
+import type { PlayerRepository } from "@/domain/repository/player.repository.js";
 import { InMemoryPlayerRepository } from "@/infrastructure/database/in-memory/in-memory-player.repository.js";
 import { ExpressControllerWrapperHttp } from "@/infrastructure/http/express/express-controller-wrapper.http.js";
 import { ZodCreatePlayerValidation } from "@/infrastructure/validator/zod/zod-create-player.validation.js";
@@ -16,37 +17,55 @@ import { ListPlayersController } from "@/presentation/controller/list-players.co
 import { UpdatePlayerController } from "@/presentation/controller/update-player.controller.js";
 import type { Controller } from "@/presentation/contract/controller.js";
 
+export type CompositionRootDeps = Readonly<{
+  playerRepository?: PlayerRepository;
+}>;
+
+export type Handlers = Readonly<{
+  createPlayer: RequestHandler;
+  listPlayers: RequestHandler;
+  getPlayer: RequestHandler;
+  updatePlayer: RequestHandler;
+  deletePlayer: RequestHandler;
+}>;
+
 const wrap = (controller: Controller): RequestHandler =>
   new ExpressControllerWrapperHttp(controller).handle;
 
-const playerRepository = new InMemoryPlayerRepository();
+export const createCompositionRoot = (
+  deps: CompositionRootDeps = {},
+): Handlers => {
+  const playerRepository = deps.playerRepository ?? new InMemoryPlayerRepository();
 
-const createPlayerValidation = new ZodCreatePlayerValidation();
-const playerIdValidation = new ZodPlayerIdValidation();
-const paginationValidation = new ZodPaginationValidation();
+  const createPlayerValidation = new ZodCreatePlayerValidation();
+  const playerIdValidation = new ZodPlayerIdValidation();
+  const paginationValidation = new ZodPaginationValidation();
 
-const createPlayerUseCase = new CreatePlayerUseCase(playerRepository);
-const listPlayersUseCase = new ListPlayersUseCase(playerRepository);
-const getPlayerUseCase = new GetPlayerUseCase(playerRepository);
-const updatePlayerUseCase = new UpdatePlayerUseCase(playerRepository);
-const deletePlayerUseCase = new DeletePlayerUseCase(playerRepository);
+  const createPlayerUseCase = new CreatePlayerUseCase(playerRepository);
+  const listPlayersUseCase = new ListPlayersUseCase(playerRepository);
+  const getPlayerUseCase = new GetPlayerUseCase(playerRepository);
+  const updatePlayerUseCase = new UpdatePlayerUseCase(playerRepository);
+  const deletePlayerUseCase = new DeletePlayerUseCase(playerRepository);
 
-export const handlers = {
-  createPlayer: wrap(
-    new CreatePlayerController(createPlayerUseCase, createPlayerValidation),
-  ),
-  listPlayers: wrap(
-    new ListPlayersController(paginationValidation, listPlayersUseCase),
-  ),
-  getPlayer: wrap(new GetPlayerController(getPlayerUseCase, playerIdValidation)),
-  updatePlayer: wrap(
-    new UpdatePlayerController(
-      updatePlayerUseCase,
-      playerIdValidation,
-      createPlayerValidation,
+  return {
+    createPlayer: wrap(
+      new CreatePlayerController(createPlayerUseCase, createPlayerValidation),
     ),
-  ),
-  deletePlayer: wrap(
-    new DeletePlayerController(deletePlayerUseCase, playerIdValidation),
-  ),
-} as const;
+    listPlayers: wrap(
+      new ListPlayersController(paginationValidation, listPlayersUseCase),
+    ),
+    getPlayer: wrap(
+      new GetPlayerController(getPlayerUseCase, playerIdValidation),
+    ),
+    updatePlayer: wrap(
+      new UpdatePlayerController(
+        updatePlayerUseCase,
+        playerIdValidation,
+        createPlayerValidation,
+      ),
+    ),
+    deletePlayer: wrap(
+      new DeletePlayerController(deletePlayerUseCase, playerIdValidation),
+    ),
+  };
+};

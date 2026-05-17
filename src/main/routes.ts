@@ -1,8 +1,8 @@
 import { type Express } from "express";
 import { logger } from "@/infrastructure/logger/logger.js";
-import { handlers } from "./composition-root.js";
+import type { Handlers } from "./composition-root.js";
 
-export const routes = (app: Express) => {
+export const routes = (app: Express, handlers: Handlers) => {
   app.get("/health", (_req, res) => {
     logger.debug("health check");
     res.status(200).json({ status: "ok" });
