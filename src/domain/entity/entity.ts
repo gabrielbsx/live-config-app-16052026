@@ -1,6 +1,7 @@
-import { randomUUID } from "node:crypto";
 import type { Actor } from "./actor.js";
 import type { ActorId } from "./identifier.js";
+import { systemClock, type Clock } from "../port/clock.js";
+import { cryptoIdGenerator, type IdGenerator } from "../port/id-generator.js";
 
 export interface EntityAuditProps {
   createdAt: Date;
@@ -20,6 +21,22 @@ export type CreateEntityProps<TProps extends EntityProps> = Omit<
   TProps,
   keyof EntityProps
 >;
+
+let _clock: Clock = systemClock;
+let _idGenerator: IdGenerator = cryptoIdGenerator;
+
+export const configureEntityServices = (services: {
+  clock?: Clock;
+  idGenerator?: IdGenerator;
+}): void => {
+  if (services.clock) _clock = services.clock;
+  if (services.idGenerator) _idGenerator = services.idGenerator;
+};
+
+export const resetEntityServices = (): void => {
+  _clock = systemClock;
+  _idGenerator = cryptoIdGenerator;
+};
 
 export class Entity<TProps extends EntityProps> {
   protected readonly _props: TProps;
@@ -48,13 +65,13 @@ export class Entity<TProps extends EntityProps> {
   }
 
   protected touch(actor: Actor): void {
-    this._props.updatedAt = new Date();
+    this._props.updatedAt = _clock.now();
     this._props.updatedBy = actor.id;
   }
 
   softDelete(actor: Actor): void {
     if (this.isDeleted) return;
-    this._props.deletedAt = new Date();
+    this._props.deletedAt = _clock.now();
     this._props.deletedBy = actor.id;
     this.onSoftDeleted();
   }
@@ -73,8 +90,8 @@ export class Entity<TProps extends EntityProps> {
     actor: Actor,
   ): T {
     const audit: EntityAuditProps & { id: P["id"] } = {
-      id: randomUUID() as P["id"],
-      createdAt: new Date(),
+      id: _idGenerator.next() as P["id"],
+      createdAt: _clock.now(),
       createdBy: actor.id,
       updatedAt: null,
       updatedBy: null,
