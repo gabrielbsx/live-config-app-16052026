@@ -9,6 +9,7 @@ import { createCompositionRoot } from "./composition-root.js";
 import { routes } from "./routes.js";
 
 const SHUTDOWN_TIMEOUT_MS = 10_000;
+const FATAL_FLUSH_MS = 200;
 
 async function main() {
   const app = express();
@@ -41,7 +42,11 @@ async function main() {
     logger.info({ port: env.PORT, env: env.NODE_ENV }, "Server started");
   });
 
+  let isShuttingDown = false;
   const shutdown = (signal: string) => {
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+
     logger.info({ signal }, "Shutting down");
     const timeout = setTimeout(() => {
       logger.error("Forced shutdown after timeout");
@@ -50,6 +55,7 @@ async function main() {
     timeout.unref();
 
     server.close((err) => {
+      clearTimeout(timeout);
       if (err) {
         logger.error({ err }, "Error during shutdown");
         process.exit(1);
@@ -65,13 +71,18 @@ async function main() {
   process.on("unhandledRejection", (reason) => {
     logger.error({ reason }, "Unhandled rejection");
   });
-  process.on("uncaughtException", (err) => {
+
+  const fatalExit = (err: unknown) => {
     logger.fatal({ err }, "Uncaught exception");
-    process.exit(1);
-  });
+    logger.flush?.();
+    server.close();
+    setTimeout(() => process.exit(1), FATAL_FLUSH_MS).unref();
+  };
+  process.on("uncaughtException", fatalExit);
 }
 
 main().catch((err) => {
   logger.fatal({ err }, "Fatal boot error");
-  process.exit(1);
+  logger.flush?.();
+  setTimeout(() => process.exit(1), 200).unref();
 });

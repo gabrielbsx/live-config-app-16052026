@@ -1,10 +1,9 @@
 import type { Actor } from "@/domain/entity/actor.js";
 
 export type Request = Readonly<{
-  params: Record<string, unknown>;
+  params: Record<string, string>;
   query: unknown;
   body: unknown;
-  headers: Record<string, unknown>;
   actor: Actor;
 }>;
 
