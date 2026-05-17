@@ -1,8 +1,8 @@
-export class InfrastructureException extends Error {
-  public layer = "Infrastructure";
+import {
+  LayeredException,
+  type Layer,
+} from "@/domain/exception/layered.exception.js";
 
-  constructor(message: string) {
-    super(message);
-    this.name = this.constructor.name;
-  }
+export class InfrastructureException extends LayeredException {
+  readonly layer: Layer = "Infrastructure";
 }

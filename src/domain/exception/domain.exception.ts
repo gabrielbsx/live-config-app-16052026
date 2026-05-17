@@ -1,10 +1,7 @@
-export class DomainException extends Error {
-  public layer = "Domain";
+import { LayeredException, type Layer } from "./layered.exception.js";
 
-  constructor(message: string) {
-    super(message);
-    this.name = this.constructor.name;
-  }
+export class DomainException extends LayeredException {
+  readonly layer: Layer = "Domain";
 
   static ensure(condition: unknown, message: string): asserts condition {
     if (!condition) throw new DomainException(message);

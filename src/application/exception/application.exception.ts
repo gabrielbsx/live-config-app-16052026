@@ -1,8 +1,8 @@
-export class ApplicationException extends Error {
-  public layer = "Application";
+import {
+  LayeredException,
+  type Layer,
+} from "@/domain/exception/layered.exception.js";
 
-  constructor(message: string) {
-    super(message);
-    this.name = this.constructor.name;
-  }
+export class ApplicationException extends LayeredException {
+  readonly layer: Layer = "Application";
 }

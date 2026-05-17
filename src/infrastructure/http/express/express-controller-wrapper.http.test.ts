@@ -34,7 +34,7 @@ const wrapThrower = (error: Error) => {
 
 describe("ExpressControllerWrapperHttp error mapping", () => {
   it.each([
-    [new ValidationException("bad", [{ path: "name" }]), 400],
+    [new ValidationException("bad"), 400],
     [new NotFoundException("Player", "abc"), 404],
     [new DomainException("rule broken"), 422],
     [new ApplicationException("conflict"), 409],
@@ -49,7 +49,9 @@ describe("ExpressControllerWrapperHttp error mapping", () => {
   });
 
   it("includes issues for ValidationException body", async () => {
-    const issues = [{ path: ["x"], message: "nope" }];
+    const issues = [
+      { path: ["x"], message: "nope", code: "custom" as const, input: null },
+    ];
     const wrapper = wrapThrower(new ValidationException("bad", issues));
     const res = fakeResponse();
 

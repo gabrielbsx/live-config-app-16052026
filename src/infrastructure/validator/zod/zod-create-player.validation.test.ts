@@ -63,8 +63,7 @@ describe("ZodCreatePlayerValidation", () => {
     } catch (e) {
       expect(e).toBeInstanceOf(ValidationException);
       const ve = e as ValidationException;
-      const issues = ve.issues as Array<{ path: string[] }>;
-      expect(issues.length).toBeGreaterThanOrEqual(3);
+      expect(ve.issues?.length ?? 0).toBeGreaterThanOrEqual(3);
     }
   });
 });
