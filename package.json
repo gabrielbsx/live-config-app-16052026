@@ -1,0 +1,27 @@
+{
+  "name": "application-02",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "gabrielbsx",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "node --watch --import tsx src/main/index.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.8.0",
+    "eslint": "^10.4.0",
+    "globals": "^17.6.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.22.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.3"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "zod": "^4.4.3"
+  }
+}

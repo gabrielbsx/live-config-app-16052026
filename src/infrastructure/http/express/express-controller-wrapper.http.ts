@@ -1,0 +1,22 @@
+import type { Request, Response } from "express";
+import type { Controller } from "../../../presentation/contract/controller.js";
+
+export class ExpressControllerWrapperHttp {
+  constructor(private readonly _controller: Controller) {}
+
+  public async handle(request: Request, response: Response) {
+    try {
+      const { statusCode, body: data } = await this._controller.handle({
+        body: request.body,
+        params: request.params as unknown as unknown[],
+        headers: request.headers as unknown as unknown[],
+        query: request.query,
+      });
+
+      return response.status(statusCode).json(data);
+    } catch (error) {
+      console.error("Error in ControllerWrapperHttp:", error);
+      return response.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+}
