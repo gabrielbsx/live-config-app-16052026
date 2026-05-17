@@ -1,13 +1,9 @@
 import type { UseCase } from "@/domain/contract/use-case.js";
 import type { Actor } from "@/domain/entity/actor.js";
-import {
-  Player,
-  type CreatePlayerInput as DomainCreatePlayerInput,
-} from "@/domain/entity/player.js";
+import { Player, type PlayerInput } from "@/domain/entity/player.js";
 import type { PlayerRepository } from "@/domain/repository/player.repository.js";
 
-export type CreatePlayerInput = DomainCreatePlayerInput &
-  Readonly<{ actor: Actor }>;
+export type CreatePlayerInput = PlayerInput & Readonly<{ actor: Actor }>;
 
 export type CreatePlayerOutput = Readonly<{
   id: string;

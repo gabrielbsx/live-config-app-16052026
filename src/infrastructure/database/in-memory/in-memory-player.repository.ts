@@ -36,12 +36,6 @@ export class InMemoryPlayerRepository implements PlayerRepository {
     return model.props.id;
   }
 
-  async updateById(id: string, model: Player): Promise<void> {
-    const index = this.players.findIndex((p) => p.props.id === id);
-    if (index === -1) return;
-    this.players[index] = model;
-  }
-
   async deleteById(id: string): Promise<void> {
     this.players = this.players.filter((p) => p.props.id !== id);
   }

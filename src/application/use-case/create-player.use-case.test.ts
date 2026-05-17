@@ -9,7 +9,6 @@ const makeRepo = (): PlayerRepository => ({
     items: [],
     meta: { totalItems: 0, totalPages: 0, currentPage: 1, pageSize: 10 },
   })),
-  updateById: vi.fn(async () => undefined),
   deleteById: vi.fn(async () => undefined),
 });
 
