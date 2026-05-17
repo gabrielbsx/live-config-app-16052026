@@ -53,7 +53,12 @@ describe("ZodCreatePlayerValidation", () => {
 
   it("aggregates multiple errors", () => {
     try {
-      validation.validate({ name: "", nickname: "", level: -1, evolution: "x" });
+      validation.validate({
+        name: "",
+        nickname: "",
+        level: -1,
+        evolution: "x",
+      });
       expect.fail("should have thrown");
     } catch (e) {
       expect(e).toBeInstanceOf(ValidationException);

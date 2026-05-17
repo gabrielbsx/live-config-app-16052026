@@ -5,9 +5,10 @@ import type { PlayerRepository } from "@/domain/repository/player.repository.js"
 export type DeletePlayerInput = Readonly<{ id: string }>;
 export type DeletePlayerOutput = void;
 
-export class DeletePlayerUseCase
-  implements UseCase<DeletePlayerInput, DeletePlayerOutput>
-{
+export class DeletePlayerUseCase implements UseCase<
+  DeletePlayerInput,
+  DeletePlayerOutput
+> {
   constructor(private readonly _playerRepository: PlayerRepository) {}
 
   async execute({ id }: DeletePlayerInput): Promise<DeletePlayerOutput> {

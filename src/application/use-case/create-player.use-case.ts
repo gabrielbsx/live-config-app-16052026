@@ -13,9 +13,10 @@ export type CreatePlayerOutput = Readonly<{
   id: string;
 }>;
 
-export class CreatePlayerUseCase
-  implements UseCase<CreatePlayerInput, CreatePlayerOutput>
-{
+export class CreatePlayerUseCase implements UseCase<
+  CreatePlayerInput,
+  CreatePlayerOutput
+> {
   constructor(private readonly _playerRepository: PlayerRepository) {}
 
   public async execute(input: CreatePlayerInput): Promise<CreatePlayerOutput> {

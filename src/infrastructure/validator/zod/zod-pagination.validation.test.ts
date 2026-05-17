@@ -16,20 +16,20 @@ describe("ZodPaginationValidation", () => {
   });
 
   it("rejects zero page", () => {
-    expect(() =>
-      validation.validate({ page: 0, limit: 10 }),
-    ).toThrowError(ValidationException);
+    expect(() => validation.validate({ page: 0, limit: 10 })).toThrowError(
+      ValidationException,
+    );
   });
 
   it("rejects negative limit", () => {
-    expect(() =>
-      validation.validate({ page: 1, limit: -5 }),
-    ).toThrowError(ValidationException);
+    expect(() => validation.validate({ page: 1, limit: -5 })).toThrowError(
+      ValidationException,
+    );
   });
 
   it("rejects non-integer page", () => {
-    expect(() =>
-      validation.validate({ page: 1.5, limit: 10 }),
-    ).toThrowError(ValidationException);
+    expect(() => validation.validate({ page: 1.5, limit: 10 })).toThrowError(
+      ValidationException,
+    );
   });
 });

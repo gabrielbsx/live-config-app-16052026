@@ -27,9 +27,7 @@ export class InMemoryPlayerRepository implements PlayerRepository {
   }
 
   async save(model: Player): Promise<string> {
-    const index = this.players.findIndex(
-      (p) => p.props.id === model.props.id,
-    );
+    const index = this.players.findIndex((p) => p.props.id === model.props.id);
     if (index !== -1) {
       this.players[index] = model;
     } else {

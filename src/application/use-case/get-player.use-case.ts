@@ -6,9 +6,10 @@ import { toPlayerDto, type PlayerDto } from "../dto/player.dto.js";
 export type GetPlayerInput = Readonly<{ id: string }>;
 export type GetPlayerOutput = PlayerDto;
 
-export class GetPlayerUseCase
-  implements UseCase<GetPlayerInput, GetPlayerOutput>
-{
+export class GetPlayerUseCase implements UseCase<
+  GetPlayerInput,
+  GetPlayerOutput
+> {
   constructor(private readonly _playerRepository: PlayerRepository) {}
 
   async execute({ id }: GetPlayerInput): Promise<GetPlayerOutput> {

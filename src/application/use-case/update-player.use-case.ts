@@ -12,9 +12,10 @@ export type UpdatePlayerInput = CreatePlayerInput &
 
 export type UpdatePlayerOutput = Readonly<{ id: string }>;
 
-export class UpdatePlayerUseCase
-  implements UseCase<UpdatePlayerInput, UpdatePlayerOutput>
-{
+export class UpdatePlayerUseCase implements UseCase<
+  UpdatePlayerInput,
+  UpdatePlayerOutput
+> {
   constructor(private readonly _playerRepository: PlayerRepository) {}
 
   async execute(input: UpdatePlayerInput): Promise<UpdatePlayerOutput> {

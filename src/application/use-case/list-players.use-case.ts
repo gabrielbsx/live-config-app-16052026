@@ -12,9 +12,10 @@ export type ListPlayerOutput = Readonly<{
   meta: PaginationResultMeta;
 }>;
 
-export class ListPlayersUseCase
-  implements UseCase<ListPlayerInput, ListPlayerOutput>
-{
+export class ListPlayersUseCase implements UseCase<
+  ListPlayerInput,
+  ListPlayerOutput
+> {
   constructor(private readonly _playerRepository: PlayerRepository) {}
 
   public async execute({
