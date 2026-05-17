@@ -1,24 +1,31 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { Player } from "@/domain/entity/player.js";
 import { DomainException } from "@/domain/exception/domain.exception.js";
 import { NotFoundException } from "@/application/exception/not-found.exception.js";
 import { PLAYER_LIMITS } from "@/domain/entity/player.constants.js";
+import type { EventPublisher } from "@/domain/event/event-publisher.js";
 import { InMemoryPlayerRepository } from "@/infrastructure/database/in-memory/in-memory-player.repository.js";
 import { UpdatePlayerUseCase } from "./update-player.use-case.js";
 
 const creator = { id: "creator" };
 const editor = { id: "editor" };
 
+const makePublisher = (): EventPublisher => ({
+  publish: vi.fn(async () => undefined),
+  subscribe: vi.fn(),
+});
+
 describe("UpdatePlayerUseCase", () => {
   it("updates existing player and stamps updatedBy", async () => {
     const repo = new InMemoryPlayerRepository();
+    const publisher = makePublisher();
     const player = Player.fromInput(
       { name: "Old", nickname: "o", level: 1, evolution: "rookie" },
       creator,
     );
     await repo.save(player);
 
-    await new UpdatePlayerUseCase(repo).execute({
+    await new UpdatePlayerUseCase(repo, publisher).execute({
       id: player.props.id,
       name: "New",
       nickname: "n",
@@ -34,12 +41,14 @@ describe("UpdatePlayerUseCase", () => {
     expect(updated?.props.updatedBy).toBe("editor");
     expect(updated?.props.createdBy).toBe("creator");
     expect(updated?.props.updatedAt).toBeInstanceOf(Date);
+    expect(publisher.publish).toHaveBeenCalledOnce();
   });
 
   it("throws NotFoundException when player missing", async () => {
     const repo = new InMemoryPlayerRepository();
+    const publisher = makePublisher();
     await expect(
-      new UpdatePlayerUseCase(repo).execute({
+      new UpdatePlayerUseCase(repo, publisher).execute({
         id: "00000000-0000-0000-0000-000000000000",
         name: "X",
         nickname: "x",
@@ -52,6 +61,7 @@ describe("UpdatePlayerUseCase", () => {
 
   it("rejects level above cap", async () => {
     const repo = new InMemoryPlayerRepository();
+    const publisher = makePublisher();
     const player = Player.fromInput(
       { name: "P", nickname: "p", level: 1, evolution: "rookie" },
       creator,
@@ -59,7 +69,7 @@ describe("UpdatePlayerUseCase", () => {
     await repo.save(player);
 
     await expect(
-      new UpdatePlayerUseCase(repo).execute({
+      new UpdatePlayerUseCase(repo, publisher).execute({
         id: player.props.id,
         name: "P",
         nickname: "p",

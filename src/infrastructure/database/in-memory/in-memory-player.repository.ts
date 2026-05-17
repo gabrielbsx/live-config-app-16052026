@@ -6,15 +6,18 @@ export class InMemoryPlayerRepository implements PlayerRepository {
   private players: Player[] = [];
 
   async findById(id: string): Promise<Player | null> {
-    return this.players.find((p) => p.props.id === id) ?? null;
+    const found = this.players.find((p) => p.props.id === id);
+    if (!found || found.isDeleted) return null;
+    return found;
   }
 
   async findByPagination(
     page: number,
     pageSize: number,
   ): Promise<PaginationResult<Player>> {
-    const total = this.players.length;
-    const items = this.players.slice((page - 1) * pageSize, page * pageSize);
+    const active = this.players.filter((p) => !p.isDeleted);
+    const total = active.length;
+    const items = active.slice((page - 1) * pageSize, page * pageSize);
     return {
       items,
       meta: {
@@ -34,9 +37,5 @@ export class InMemoryPlayerRepository implements PlayerRepository {
       this.players.push(model);
     }
     return model.props.id;
-  }
-
-  async deleteById(id: string): Promise<void> {
-    this.players = this.players.filter((p) => p.props.id !== id);
   }
 }

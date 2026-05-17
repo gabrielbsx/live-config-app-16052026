@@ -12,7 +12,7 @@ export class DeletePlayerController implements Controller {
 
   async handle(request: Request): Promise<Response> {
     const { id } = this._idValidation.validate(request.params);
-    await this._deletePlayerUseCase.execute({ id });
+    await this._deletePlayerUseCase.execute({ id, actor: request.actor });
     return noContent();
   }
 }

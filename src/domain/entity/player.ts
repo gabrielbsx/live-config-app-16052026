@@ -62,10 +62,9 @@ export class Player extends AggregateRoot<PlayerProps> {
   }
 
   private static assertLevelWithinCap(level: number): void {
-    if (level > PLAYER_LIMITS.LEVEL_MAX) {
-      throw new DomainException(
-        `Level cap exceeded (max ${PLAYER_LIMITS.LEVEL_MAX})`,
-      );
-    }
+    DomainException.ensure(
+      level <= PLAYER_LIMITS.LEVEL_MAX,
+      `Level cap exceeded (max ${PLAYER_LIMITS.LEVEL_MAX})`,
+    );
   }
 }

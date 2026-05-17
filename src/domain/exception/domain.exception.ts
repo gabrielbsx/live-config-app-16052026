@@ -5,4 +5,8 @@ export class DomainException extends Error {
     super(message);
     this.name = this.constructor.name;
   }
+
+  static ensure(condition: unknown, message: string): asserts condition {
+    if (!condition) throw new DomainException(message);
+  }
 }

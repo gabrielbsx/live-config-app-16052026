@@ -13,5 +13,4 @@ export interface Paginated<TModel> {
 
 export interface Writable<TModel> {
   save(model: TModel): Promise<string>;
-  deleteById(id: string): Promise<void>;
 }

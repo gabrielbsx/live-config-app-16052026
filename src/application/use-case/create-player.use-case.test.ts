@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import type { EventPublisher } from "@/domain/event/event-publisher.js";
 import type { PlayerRepository } from "@/domain/repository/player.repository.js";
 import { CreatePlayerUseCase } from "./create-player.use-case.js";
 
@@ -9,7 +10,11 @@ const makeRepo = (): PlayerRepository => ({
     items: [],
     meta: { totalItems: 0, totalPages: 0, currentPage: 1, pageSize: 10 },
   })),
-  deleteById: vi.fn(async () => undefined),
+});
+
+const makePublisher = (): EventPublisher => ({
+  publish: vi.fn(async () => undefined),
+  subscribe: vi.fn(),
 });
 
 const actor = { id: "tester" };
@@ -17,7 +22,8 @@ const actor = { id: "tester" };
 describe("CreatePlayerUseCase", () => {
   it("creates and persists player", async () => {
     const repo = makeRepo();
-    const useCase = new CreatePlayerUseCase(repo);
+    const publisher = makePublisher();
+    const useCase = new CreatePlayerUseCase(repo, publisher);
 
     const result = await useCase.execute({
       name: "Alice",
@@ -33,7 +39,8 @@ describe("CreatePlayerUseCase", () => {
 
   it("propagates domain exception when level above cap", async () => {
     const repo = makeRepo();
-    const useCase = new CreatePlayerUseCase(repo);
+    const publisher = makePublisher();
+    const useCase = new CreatePlayerUseCase(repo, publisher);
 
     await expect(
       useCase.execute({
