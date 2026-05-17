@@ -1,8 +1,8 @@
-import { CreatePlayerUseCase } from "../../application/use-case/create-player.use-case.js";
-import { InMemoryPlayerRepository } from "../../infrastructure/database/in-memory/in-memory-player.repository.js";
-import { ExpressControllerWrapperHttp } from "../../infrastructure/http/express/express-controller-wrapper.http.js";
-import { ZodCreatePlayerValidation } from "../../infrastructure/validator/zod/zod-create-player.validation.js";
-import { CreatePlayerController } from "../../presentation/controller/create-player.controller.js";
+import { CreatePlayerUseCase } from "@/application/use-case/create-player.use-case.js";
+import { InMemoryPlayerRepository } from "@/infrastructure/database/in-memory/in-memory-player.repository.js";
+import { ExpressControllerWrapperHttp } from "@/infrastructure/http/express/express-controller-wrapper.http.js";
+import { ZodCreatePlayerValidation } from "@/infrastructure/validator/zod/zod-create-player.validation.js";
+import { CreatePlayerController } from "@/presentation/controller/create-player.controller.js";
 import { type Express } from "express";
 
 export const createPlayerFactoryRoute = (app: Express) => {

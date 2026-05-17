@@ -15,7 +15,7 @@ export type CreatePlayerOutput = Readonly<{
 
 export class CreatePlayerUseCase implements UseCase<
   CreatePlayerInput,
-  unknown
+  CreatePlayerOutput
 > {
   constructor(private readonly _playerRepository: PlayerRepository) {}
 

@@ -21,7 +21,7 @@
     "declarationMap": true,
 
     "paths": {
-      "@/*": ["./src"]
+      "@/*": ["./src/*"]
     },
 
     // Stricter Typechecking Options

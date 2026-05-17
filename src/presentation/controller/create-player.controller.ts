@@ -1,5 +1,4 @@
-import { ok } from "node:assert";
-import type { CreatePlayerUseCase } from "../../application/use-case/create-player.use-case.js";
+import type { CreatePlayerUseCase } from "@/application/use-case/create-player.use-case.js";
 import type { Controller } from "../contract/controller.js";
 import type { Request, Response } from "../contract/http.js";
 import type { CreatePlayerValidation } from "../validation/create-player.validation.js";

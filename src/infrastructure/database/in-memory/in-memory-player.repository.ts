@@ -1,6 +1,6 @@
-import type { PaginationResult } from "../../../domain/contract/pagination.js";
-import type { Player } from "../../../domain/entity/player.js";
-import type { PlayerRepository } from "../../../domain/repository/player.repository.js";
+import type { PaginationResult } from "@/domain/contract/pagination.js";
+import type { Player } from "@/domain/entity/player.js";
+import type { PlayerRepository } from "@/domain/repository/player.repository.js";
 
 export class InMemoryPlayerRepository implements PlayerRepository {
   static players: Player[] = [];

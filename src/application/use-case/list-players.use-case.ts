@@ -1,10 +1,10 @@
 import type {
   PaginationInput,
   PaginationResultMeta,
-} from "../../domain/contract/pagination.js";
-import type { UseCase } from "../../domain/contract/use-case.js";
-import type { Player, PlayerProps } from "../../domain/entity/player.js";
-import type { PlayerRepository } from "../../domain/repository/player.repository.js";
+} from "@/domain/contract/pagination.js";
+import type { UseCase } from "@/domain/contract/use-case.js";
+import type { Player, PlayerProps } from "@/domain/entity/player.js";
+import type { PlayerRepository } from "@/domain/repository/player.repository.js";
 
 export type ListPlayerInput = Readonly<PaginationInput>;
 export type ListPlayerOutput = Readonly<{

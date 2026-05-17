@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type { Controller } from "../../../presentation/contract/controller.js";
+import type { Controller } from "@/presentation/contract/controller.js";
 
 export class ExpressControllerWrapperHttp {
   constructor(private readonly _controller: Controller) {}
@@ -16,7 +16,8 @@ export class ExpressControllerWrapperHttp {
       return response.status(statusCode).json(data);
     } catch (error) {
       console.error("Error in ControllerWrapperHttp:", error);
-      return response.status(500).json({ error: "Internal Server Error" });
+      const message = error instanceof Error ? error.message : "Unknown error";
+      return response.status(500).json({ error: message });
     }
   }
 }

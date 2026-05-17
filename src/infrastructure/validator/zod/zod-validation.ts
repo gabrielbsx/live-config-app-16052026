@@ -1,4 +1,4 @@
-import type { ZodSchema } from "zod/v3";
+import { ApplicationException } from "../../../domain/exception/application-exception.js";
 import type { Validation } from "../../../presentation/contract/validation.js";
 import { z, ZodType } from "zod";
 
@@ -11,7 +11,7 @@ export abstract class ZodValidation<
     const result = this._schema.safeParse(input);
 
     if (!result.success) {
-      throw new Error(result.error.message);
+      throw new ApplicationException(result.error.message);
     }
 
     return result.data;
