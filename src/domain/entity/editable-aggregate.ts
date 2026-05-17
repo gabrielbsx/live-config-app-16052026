@@ -20,8 +20,8 @@ export abstract class EditableAggregate<
 > extends AggregateRoot<TProps> {
   protected abstract mapInput(input: TInput): CreateEntityProps<TProps>;
 
-  protected validateInput(_input: TInput): void {
-    // override in subclass for input invariants
+  protected validateInput(input: TInput): void {
+    void input; // base no-op; subclass overrides for invariants
   }
 
   update(input: TInput, actor: Actor): void {
