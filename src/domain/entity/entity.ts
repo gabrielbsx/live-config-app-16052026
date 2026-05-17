@@ -54,6 +54,15 @@ export class Entity<TProps extends EntityProps> {
     if (this.isDeleted) return;
     this._props.deletedAt = new Date();
     this._props.deletedBy = actor.id;
+    this.onSoftDeleted();
+  }
+
+  protected onCreated(): void {
+    // hook for subclasses (e.g. AggregateRoot emits lifecycle event)
+  }
+
+  protected onSoftDeleted(): void {
+    // hook for subclasses
   }
 
   static create<T extends Entity<P>, P extends EntityProps>(
@@ -70,7 +79,9 @@ export class Entity<TProps extends EntityProps> {
       deletedAt: null,
       deletedBy: null,
     };
-    return new this({ ...props, ...audit } as P);
+    const entity = new this({ ...props, ...audit } as P);
+    entity.onCreated();
+    return entity;
   }
 
   static restore<T extends Entity<P>, P extends EntityProps>(

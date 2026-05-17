@@ -1,10 +1,5 @@
 import { DomainException } from "../exception/domain.exception.js";
 import {
-  PlayerCreatedEvent,
-  PlayerSoftDeletedEvent,
-  PlayerUpdatedEvent,
-} from "../event/player-events.js";
-import {
   EvolutionValueObject,
   type EvolutionStage,
 } from "../value-object/evolution.js";
@@ -29,41 +24,33 @@ export type PlayerInput = Readonly<{
 
 export class Player extends AggregateRoot<PlayerProps> {
   static fromInput(input: PlayerInput, actor: Actor): Player {
-    Player.assertLevelWithinCap(input.level);
-
-    const player = Player.create(
-      {
-        name: input.name,
-        nickname: input.nickname,
-        level: input.level,
-        evolution: new EvolutionValueObject(input.evolution),
-      } satisfies CreateEntityProps<PlayerProps>,
-      actor,
-    );
-    player.addDomainEvent(new PlayerCreatedEvent(player.id));
-    return player;
+    Player.validateInput(input);
+    return Player.create(Player.toProps(input), actor);
   }
 
   update(input: PlayerInput, actor: Actor): void {
-    Player.assertLevelWithinCap(input.level);
-
-    this._props.name = input.name;
-    this._props.nickname = input.nickname;
-    this._props.level = input.level;
-    this._props.evolution = new EvolutionValueObject(input.evolution);
-    this.touch(actor);
-    this.addDomainEvent(new PlayerUpdatedEvent(this.id));
+    Player.validateInput(input);
+    this.applyChange(actor, () => {
+      const next = Player.toProps(input);
+      this._props.name = next.name;
+      this._props.nickname = next.nickname;
+      this._props.level = next.level;
+      this._props.evolution = next.evolution;
+    });
   }
 
-  override softDelete(actor: Actor): void {
-    if (this.isDeleted) return;
-    super.softDelete(actor);
-    this.addDomainEvent(new PlayerSoftDeletedEvent(this.id));
+  private static toProps(input: PlayerInput): CreateEntityProps<PlayerProps> {
+    return {
+      name: input.name,
+      nickname: input.nickname,
+      level: input.level,
+      evolution: new EvolutionValueObject(input.evolution),
+    };
   }
 
-  private static assertLevelWithinCap(level: number): void {
+  private static validateInput(input: PlayerInput): void {
     DomainException.ensure(
-      level <= PLAYER_LIMITS.LEVEL_MAX,
+      input.level <= PLAYER_LIMITS.LEVEL_MAX,
       `Level cap exceeded (max ${PLAYER_LIMITS.LEVEL_MAX})`,
     );
   }
