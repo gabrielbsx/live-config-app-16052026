@@ -12,12 +12,7 @@ export const listPlayersFactoryRoute = (app: Express) => {
     zodPaginationValidation,
     listPlayersUseCase,
   );
-  const expressControllerWrapped = new ExpressControllerWrapperHttp(
-    listPlayersController,
-  );
+  const wrapped = new ExpressControllerWrapperHttp(listPlayersController);
 
-  app.get(
-    "/player",
-    expressControllerWrapped.handle.bind(expressControllerWrapped),
-  );
+  app.get("/player", wrapped.handle);
 };

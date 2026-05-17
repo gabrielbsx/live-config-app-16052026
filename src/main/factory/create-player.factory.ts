@@ -12,12 +12,7 @@ export const createPlayerFactoryRoute = (app: Express) => {
     createPlayerUseCase,
     zodCreatePlayerValidation,
   );
-  const expressControllerWrapped = new ExpressControllerWrapperHttp(
-    createPlayerController,
-  );
+  const wrapped = new ExpressControllerWrapperHttp(createPlayerController);
 
-  app.post(
-    "/player",
-    expressControllerWrapped.handle.bind(expressControllerWrapped),
-  );
+  app.post("/player", wrapped.handle);
 };

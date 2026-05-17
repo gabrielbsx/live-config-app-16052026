@@ -1,2 +1,38 @@
+@host = http://localhost:5000
+@playerId = REPLACE_WITH_UUID
 
-GET http://localhost:5000/player?page=1&limit=10 HTTP/1.1
+### Health
+GET {{host}}/health HTTP/1.1
+
+### Create
+POST {{host}}/player HTTP/1.1
+Content-Type: application/json
+x-user-id: alice
+
+{
+  "name": "Alice",
+  "nickname": "Aly",
+  "level": 10,
+  "evolution": "pro"
+}
+
+### List
+GET {{host}}/player?page=1&limit=10 HTTP/1.1
+
+### Get by id
+GET {{host}}/player/{{playerId}} HTTP/1.1
+
+### Update
+PUT {{host}}/player/{{playerId}} HTTP/1.1
+Content-Type: application/json
+x-user-id: bob
+
+{
+  "name": "Alice2",
+  "nickname": "Aly2",
+  "level": 50,
+  "evolution": "legend"
+}
+
+### Delete
+DELETE {{host}}/player/{{playerId}} HTTP/1.1

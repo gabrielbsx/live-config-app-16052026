@@ -7,3 +7,8 @@ export const created = <TBody>(body: TBody) => ({
   statusCode: 201,
   body,
 });
+
+export const noContent = () => ({
+  statusCode: 204,
+  body: null,
+});

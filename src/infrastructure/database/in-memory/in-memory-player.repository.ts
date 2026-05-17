@@ -5,14 +5,8 @@ import type { PlayerRepository } from "@/domain/repository/player.repository.js"
 export class InMemoryPlayerRepository implements PlayerRepository {
   private players: Player[] = [];
 
-  async create(player: Player): Promise<Player> {
-    this.players.push(player);
-    return player;
-  }
-
   async findById(id: string): Promise<Player | null> {
-    const player = this.players.find((player) => player.props.id === id);
-    return player || null;
+    return this.players.find((p) => p.props.id === id) ?? null;
   }
 
   async findByPagination(
@@ -25,35 +19,32 @@ export class InMemoryPlayerRepository implements PlayerRepository {
       items,
       meta: {
         totalItems: total,
-        totalPages: Math.ceil(total / pageSize),
+        totalPages: pageSize > 0 ? Math.ceil(total / pageSize) : 0,
         currentPage: page,
         pageSize,
       },
     };
   }
 
-  async updateById(id: string, player: Player): Promise<void> {
-    const index = this.players.findIndex((player) => player.props.id === id);
-    if (index !== -1) {
-      this.players[index] = player;
-    }
-  }
-
-  async deleteById(id: string): Promise<void> {
-    this.players = this.players.filter((player) => player.props.id !== id);
-  }
-
   async save(model: Player): Promise<string> {
-    const existingIndex = this.players.findIndex(
-      (player) => player.props.id === model.props.id,
+    const index = this.players.findIndex(
+      (p) => p.props.id === model.props.id,
     );
-
-    if (existingIndex !== -1) {
-      this.players[existingIndex] = model;
+    if (index !== -1) {
+      this.players[index] = model;
     } else {
       this.players.push(model);
     }
-
     return model.props.id;
+  }
+
+  async updateById(id: string, model: Player): Promise<void> {
+    const index = this.players.findIndex((p) => p.props.id === id);
+    if (index === -1) return;
+    this.players[index] = model;
+  }
+
+  async deleteById(id: string): Promise<void> {
+    this.players = this.players.filter((p) => p.props.id !== id);
   }
 }

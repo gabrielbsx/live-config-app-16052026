@@ -1,4 +1,6 @@
 import type { Player } from "../entity/player.js";
-import type { Repository } from "./repository.js";
+import type { Paginated, Readable, Writable } from "./repository.js";
 
-export interface PlayerRepository extends Repository<Player> {}
+export type PlayerRepository = Readable<Player> &
+  Paginated<Player> &
+  Writable<Player>;

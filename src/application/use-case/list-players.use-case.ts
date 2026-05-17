@@ -3,19 +3,18 @@ import type {
   PaginationResultMeta,
 } from "@/domain/contract/pagination.js";
 import type { UseCase } from "@/domain/contract/use-case.js";
-import type { Player, PlayerProps } from "@/domain/entity/player.js";
 import type { PlayerRepository } from "@/domain/repository/player.repository.js";
+import { toPlayerDto, type PlayerDto } from "@/application/dto/player.dto.js";
 
 export type ListPlayerInput = Readonly<PaginationInput>;
 export type ListPlayerOutput = Readonly<{
-  data: Readonly<PlayerProps[]>;
+  data: readonly PlayerDto[];
   meta: PaginationResultMeta;
 }>;
 
-export class ListPlayersUseCase implements UseCase<
-  ListPlayerInput,
-  ListPlayerOutput
-> {
+export class ListPlayersUseCase
+  implements UseCase<ListPlayerInput, ListPlayerOutput>
+{
   constructor(private readonly _playerRepository: PlayerRepository) {}
 
   public async execute({
@@ -28,7 +27,7 @@ export class ListPlayersUseCase implements UseCase<
     );
 
     return {
-      data: items.map((player) => player.getData()),
+      data: items.map(toPlayerDto),
       meta,
     };
   }

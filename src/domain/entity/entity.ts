@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import type { Actor } from "./actor.js";
 
 export interface EntityAuditProps {
   createdAt: Date;
@@ -28,20 +29,17 @@ export class Entity<TProps extends EntityProps> {
   static create<T extends Entity<P>, P extends EntityProps>(
     this: new (props: P) => T,
     props: CreateEntityProps<P>,
-  ) {
+    actor: Actor,
+  ): T {
     return new this({
       ...props,
       id: randomUUID(),
       createdAt: new Date(),
-      createdBy: "system",
+      createdBy: actor.id,
       updatedAt: null,
       updatedBy: null,
       deletedAt: null,
       deletedBy: null,
-    } as P);
-  }
-
-  public getData() {
-    return this.props;
+    } as unknown as P);
   }
 }
