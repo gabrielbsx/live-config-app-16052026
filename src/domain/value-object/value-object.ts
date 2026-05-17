@@ -1,5 +1,14 @@
+/**
+ * Base for value objects. Equality is by value (deep for nested objects).
+ *
+ * NOTE: this base does NOT call Object.freeze. If your subclass adds fields,
+ * freeze at the end of its own constructor (or call this.freeze()) so the
+ * extra fields are initialised before the object becomes immutable.
+ */
 export abstract class ValueObject<TValue> {
-  constructor(public readonly value: TValue) {
+  constructor(public readonly value: TValue) {}
+
+  protected freeze(): void {
     Object.freeze(this);
   }
 
@@ -13,8 +22,8 @@ export abstract class ValueObject<TValue> {
     if (a === b) return true;
     if (a === null || b === null) return false;
     if (typeof a !== "object" || typeof b !== "object") return false;
-    const ka = Object.keys(a as object);
-    const kb = Object.keys(b as object);
+    const ka = Object.keys(a as Record<string, unknown>);
+    const kb = Object.keys(b as Record<string, unknown>);
     if (ka.length !== kb.length) return false;
     return ka.every((k) =>
       ValueObject.deepEqual(

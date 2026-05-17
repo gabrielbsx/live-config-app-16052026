@@ -19,6 +19,23 @@ describe("EvolutionValueObject", () => {
     }).toThrow();
   });
 
+  it("rank reflects EVOLUTION_STAGES order", () => {
+    expect(new EvolutionValueObject("rookie").rank).toBe(0);
+    expect(new EvolutionValueObject("legend").rank).toBe(3);
+  });
+
+  it("canTransitionTo allows forward and same stage, blocks regression", () => {
+    const pro = new EvolutionValueObject("pro");
+    expect(pro.canTransitionTo("legend")).toBe(true);
+    expect(pro.canTransitionTo("pro")).toBe(true);
+    expect(pro.canTransitionTo("rookie")).toBe(false);
+  });
+
+  it("next() returns the next stage, null at terminal", () => {
+    expect(new EvolutionValueObject("rookie").next()?.value).toBe("amateur");
+    expect(new EvolutionValueObject("legend").next()).toBeNull();
+  });
+
   it("equals other VO with same value", () => {
     const a = new EvolutionValueObject("pro");
     const b = new EvolutionValueObject("pro");
