@@ -8,8 +8,8 @@ export class ExpressControllerWrapperHttp {
     try {
       const { statusCode, body: data } = await this._controller.handle({
         body: request.body,
-        params: request.params as unknown as unknown[],
-        headers: request.headers as unknown as unknown[],
+        params: request.params,
+        headers: request.headers as Record<string, unknown>,
         query: request.query,
       });
 

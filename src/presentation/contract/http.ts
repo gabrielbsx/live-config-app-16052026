@@ -1,8 +1,8 @@
 export type Request = Readonly<{
-  params: unknown[];
+  params: Record<string, unknown>;
   query: unknown;
   body: unknown;
-  headers: unknown[];
+  headers: Record<string, unknown>;
 }>;
 
 export type Response = Readonly<{

@@ -3,17 +3,15 @@ import type { Player } from "@/domain/entity/player.js";
 import type { PlayerRepository } from "@/domain/repository/player.repository.js";
 
 export class InMemoryPlayerRepository implements PlayerRepository {
-  static players: Player[] = [];
+  private players: Player[] = [];
 
   async create(player: Player): Promise<Player> {
-    InMemoryPlayerRepository.players.push(player);
+    this.players.push(player);
     return player;
   }
 
   async findById(id: string): Promise<Player | null> {
-    const player = InMemoryPlayerRepository.players.find(
-      (player) => player.props.id === id,
-    );
+    const player = this.players.find((player) => player.props.id === id);
     return player || null;
   }
 
@@ -21,11 +19,8 @@ export class InMemoryPlayerRepository implements PlayerRepository {
     page: number,
     pageSize: number,
   ): Promise<PaginationResult<Player>> {
-    const total = InMemoryPlayerRepository.players.length;
-    const items = InMemoryPlayerRepository.players.slice(
-      (page - 1) * pageSize,
-      page * pageSize,
-    );
+    const total = this.players.length;
+    const items = this.players.slice((page - 1) * pageSize, page * pageSize);
     return {
       items,
       meta: {
@@ -38,29 +33,25 @@ export class InMemoryPlayerRepository implements PlayerRepository {
   }
 
   async updateById(id: string, player: Player): Promise<void> {
-    const index = InMemoryPlayerRepository.players.findIndex(
-      (player) => player.props.id === id,
-    );
+    const index = this.players.findIndex((player) => player.props.id === id);
     if (index !== -1) {
-      InMemoryPlayerRepository.players[index] = player;
+      this.players[index] = player;
     }
   }
 
   async deleteById(id: string): Promise<void> {
-    InMemoryPlayerRepository.players = InMemoryPlayerRepository.players.filter(
-      (player) => player.props.id !== id,
-    );
+    this.players = this.players.filter((player) => player.props.id !== id);
   }
 
   async save(model: Player): Promise<string> {
-    const existingIndex = InMemoryPlayerRepository.players.findIndex(
+    const existingIndex = this.players.findIndex(
       (player) => player.props.id === model.props.id,
     );
 
     if (existingIndex !== -1) {
-      InMemoryPlayerRepository.players[existingIndex] = model;
+      this.players[existingIndex] = model;
     } else {
-      InMemoryPlayerRepository.players.push(model);
+      this.players.push(model);
     }
 
     return model.props.id;
