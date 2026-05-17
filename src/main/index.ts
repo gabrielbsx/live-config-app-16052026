@@ -4,6 +4,7 @@ import cors from "cors";
 import rateLimit from "express-rate-limit";
 import { env } from "@/infrastructure/config/env.js";
 import { logger } from "@/infrastructure/logger/logger.js";
+import { actorMiddleware } from "@/infrastructure/http/express/actor.middleware.js";
 import { routes } from "./routes.js";
 
 const SHUTDOWN_TIMEOUT_MS = 10_000;
@@ -28,6 +29,7 @@ async function main() {
   );
   app.use(express.json({ limit: "100kb" }));
   app.use(express.urlencoded({ extended: true, limit: "100kb" }));
+  app.use(actorMiddleware);
 
   routes(app);
 

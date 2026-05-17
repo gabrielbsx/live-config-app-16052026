@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import type { Controller } from "@/presentation/contract/controller.js";
+import { SYSTEM_ACTOR } from "@/domain/entity/actor.js";
 import { logger } from "@/infrastructure/logger/logger.js";
 import { errorMap } from "./error-mapping.js";
 
@@ -13,6 +14,7 @@ export class ExpressControllerWrapperHttp {
         params: request.params,
         headers: request.headers as Record<string, unknown>,
         query: request.query,
+        actor: response.locals.actor ?? SYSTEM_ACTOR,
       });
 
       return response.status(statusCode).json(body);
