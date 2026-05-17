@@ -1,3 +1,4 @@
+import { asActorId } from "@/domain/entity/identifier.js";
 import { describe, expect, it, vi } from "vitest";
 import { Player } from "@/domain/entity/player.js";
 import { DomainException } from "@/domain/exception/domain.exception.js";
@@ -7,8 +8,8 @@ import type { EventPublisher } from "@/domain/event/event-publisher.js";
 import { InMemoryPlayerRepository } from "@/infrastructure/database/in-memory/in-memory-player.repository.js";
 import { UpdatePlayerUseCase } from "./update-player.use-case.js";
 
-const creator = { id: "creator" };
-const editor = { id: "editor" };
+const creator = { id: asActorId("creator") };
+const editor = { id: asActorId("editor") };
 
 const makePublisher = (): EventPublisher => ({
   publish: vi.fn(async () => undefined),

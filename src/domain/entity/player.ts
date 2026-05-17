@@ -5,9 +5,10 @@ import {
 } from "../value-object/evolution.js";
 import { EditableAggregate } from "./editable-aggregate.js";
 import type { CreateEntityProps, EntityProps } from "./entity.js";
+import type { PlayerId } from "./identifier.js";
 import { PLAYER_LIMITS } from "./player.constants.js";
 
-export interface PlayerProps extends EntityProps {
+export interface PlayerProps extends EntityProps<PlayerId> {
   name: string;
   nickname: string;
   level: number;

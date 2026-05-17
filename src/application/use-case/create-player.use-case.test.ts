@@ -1,3 +1,4 @@
+import { asActorId } from "@/domain/entity/identifier.js";
 import { describe, expect, it, vi } from "vitest";
 import type { EventPublisher } from "@/domain/event/event-publisher.js";
 import type { PlayerRepository } from "@/domain/repository/player.repository.js";
@@ -17,7 +18,7 @@ const makePublisher = (): EventPublisher => ({
   subscribe: vi.fn(),
 });
 
-const actor = { id: "tester" };
+const actor = { id: asActorId("tester") };
 
 describe("CreatePlayerUseCase", () => {
   it("creates and persists player", async () => {

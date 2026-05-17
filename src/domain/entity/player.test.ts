@@ -1,9 +1,10 @@
+import { asActorId } from "@/domain/entity/identifier.js";
 import { describe, expect, it } from "vitest";
 import { DomainException } from "../exception/domain.exception.js";
 import { Player } from "./player.js";
 import { PLAYER_LIMITS } from "./player.constants.js";
 
-const actor = { id: "tester" };
+const actor = { id: asActorId("tester") };
 
 const validInput = {
   name: "Alice",
@@ -40,7 +41,7 @@ describe("Player.fromInput", () => {
   });
 
   it("stamps actor on creation", () => {
-    const player = Player.fromInput(validInput, { id: "user-42" });
+    const player = Player.fromInput(validInput, { id: asActorId("user-42") });
     expect(player.props.createdBy).toBe("user-42");
   });
 
@@ -58,7 +59,7 @@ describe("Player.update", () => {
     const player = Player.fromInput(validInput, actor);
     player.pullDomainEvents();
 
-    player.update({ ...validInput, name: "Bob" }, { id: "editor" });
+    player.update({ ...validInput, name: "Bob" }, { id: asActorId("editor") });
 
     expect(player.props.name).toBe("Bob");
     expect(player.props.updatedBy).toBe("editor");
@@ -75,7 +76,7 @@ describe("Player.softDelete", () => {
     const player = Player.fromInput(validInput, actor);
     player.pullDomainEvents();
 
-    player.softDelete({ id: "remover" });
+    player.softDelete({ id: asActorId("remover") });
 
     expect(player.isDeleted).toBe(true);
     const events = player.pullDomainEvents();
@@ -84,10 +85,10 @@ describe("Player.softDelete", () => {
 
   it("does not re-emit when already deleted", () => {
     const player = Player.fromInput(validInput, actor);
-    player.softDelete({ id: "remover" });
+    player.softDelete({ id: asActorId("remover") });
     player.pullDomainEvents();
 
-    player.softDelete({ id: "remover" });
+    player.softDelete({ id: asActorId("remover") });
     expect(player.pullDomainEvents()).toHaveLength(0);
   });
 });

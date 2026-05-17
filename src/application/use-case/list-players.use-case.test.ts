@@ -1,9 +1,10 @@
+import { asActorId } from "@/domain/entity/identifier.js";
 import { describe, expect, it } from "vitest";
 import { Player } from "@/domain/entity/player.js";
 import { InMemoryPlayerRepository } from "@/infrastructure/database/in-memory/in-memory-player.repository.js";
 import { ListPlayersUseCase } from "./list-players.use-case.js";
 
-const actor = { id: "tester" };
+const actor = { id: asActorId("tester") };
 
 describe("ListPlayersUseCase", () => {
   it("returns paginated DTOs without audit leak", async () => {

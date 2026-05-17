@@ -1,17 +1,19 @@
 import { randomUUID } from "node:crypto";
 import type { Actor } from "./actor.js";
+import type { ActorId } from "./identifier.js";
 
 export interface EntityAuditProps {
   createdAt: Date;
-  createdBy: string;
+  createdBy: ActorId;
   updatedAt: Date | null;
-  updatedBy: string | null;
+  updatedBy: ActorId | null;
   deletedAt: Date | null;
-  deletedBy: string | null;
+  deletedBy: ActorId | null;
 }
 
-export interface EntityProps extends EntityAuditProps {
-  id: string;
+export interface EntityProps<TId extends string = string>
+  extends EntityAuditProps {
+  id: TId;
 }
 
 export type CreateEntityProps<TProps extends EntityProps> = Omit<
@@ -30,7 +32,7 @@ export class Entity<TProps extends EntityProps> {
     return this._props;
   }
 
-  get id(): string {
+  get id(): TProps["id"] {
     return this._props.id;
   }
 
@@ -58,7 +60,7 @@ export class Entity<TProps extends EntityProps> {
   }
 
   protected onCreated(): void {
-    // hook for subclasses (e.g. AggregateRoot emits lifecycle event)
+    // hook for subclasses
   }
 
   protected onSoftDeleted(): void {
@@ -70,8 +72,8 @@ export class Entity<TProps extends EntityProps> {
     props: CreateEntityProps<P>,
     actor: Actor,
   ): T {
-    const audit: EntityAuditProps & { id: string } = {
-      id: randomUUID(),
+    const audit: EntityAuditProps & { id: P["id"] } = {
+      id: randomUUID() as P["id"],
       createdAt: new Date(),
       createdBy: actor.id,
       updatedAt: null,

@@ -1,8 +1,9 @@
+import { asActorId } from "@/domain/entity/identifier.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import { Player } from "@/domain/entity/player.js";
 import { InMemoryPlayerRepository } from "./in-memory-player.repository.js";
 
-const actor = { id: "tester" };
+const actor = { id: asActorId("tester") };
 
 const makePlayer = (overrides: Partial<{ level: number }> = {}) =>
   Player.fromInput(

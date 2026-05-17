@@ -1,3 +1,4 @@
+import { asActorId } from "@/domain/entity/identifier.js";
 import { describe, expect, it } from "vitest";
 import { Entity, type EntityProps } from "./entity.js";
 
@@ -9,7 +10,7 @@ class Thing extends Entity<ThingProps> {}
 
 describe("Entity.create", () => {
   it("generates uuid, audit fields and stamps actor", () => {
-    const thing = Thing.create({ label: "x" }, { id: "user-1" });
+    const thing = Thing.create({ label: "x" }, { id: asActorId("user-1") });
 
     expect(thing.props.id).toMatch(
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
@@ -24,32 +25,32 @@ describe("Entity.create", () => {
   });
 
   it("uses system actor when passed explicitly", () => {
-    const thing = Thing.create({ label: "y" }, { id: "system" });
+    const thing = Thing.create({ label: "y" }, { id: asActorId("system") });
     expect(thing.props.createdBy).toBe("system");
   });
 
   it("generates unique ids", () => {
-    const a = Thing.create({ label: "a" }, { id: "u" });
-    const b = Thing.create({ label: "b" }, { id: "u" });
+    const a = Thing.create({ label: "a" }, { id: asActorId("u") });
+    const b = Thing.create({ label: "b" }, { id: asActorId("u") });
     expect(a.props.id).not.toBe(b.props.id);
   });
 });
 
 describe("Entity.equals", () => {
   it("returns true for same id, same class", () => {
-    const a = Thing.create({ label: "a" }, { id: "u" });
+    const a = Thing.create({ label: "a" }, { id: asActorId("u") });
     const b = Thing.restore({ ...a.props });
     expect(a.equals(b)).toBe(true);
   });
 
   it("returns false for different ids", () => {
-    const a = Thing.create({ label: "a" }, { id: "u" });
-    const b = Thing.create({ label: "a" }, { id: "u" });
+    const a = Thing.create({ label: "a" }, { id: asActorId("u") });
+    const b = Thing.create({ label: "a" }, { id: asActorId("u") });
     expect(a.equals(b)).toBe(false);
   });
 
   it("returns false for null/undefined", () => {
-    const a = Thing.create({ label: "a" }, { id: "u" });
+    const a = Thing.create({ label: "a" }, { id: asActorId("u") });
     expect(a.equals(null)).toBe(false);
     expect(a.equals(undefined)).toBe(false);
   });
@@ -57,18 +58,18 @@ describe("Entity.equals", () => {
 
 describe("Entity.softDelete", () => {
   it("stamps deletedAt and deletedBy", () => {
-    const thing = Thing.create({ label: "x" }, { id: "u" });
-    thing.softDelete({ id: "remover" });
+    const thing = Thing.create({ label: "x" }, { id: asActorId("u") });
+    thing.softDelete({ id: asActorId("remover") });
     expect(thing.isDeleted).toBe(true);
     expect(thing.props.deletedAt).toBeInstanceOf(Date);
     expect(thing.props.deletedBy).toBe("remover");
   });
 
   it("is idempotent (does not overwrite)", () => {
-    const thing = Thing.create({ label: "x" }, { id: "u" });
-    thing.softDelete({ id: "first" });
+    const thing = Thing.create({ label: "x" }, { id: asActorId("u") });
+    thing.softDelete({ id: asActorId("first") });
     const firstStamp = thing.props.deletedAt;
-    thing.softDelete({ id: "second" });
+    thing.softDelete({ id: asActorId("second") });
     expect(thing.props.deletedAt).toBe(firstStamp);
     expect(thing.props.deletedBy).toBe("first");
   });
@@ -80,7 +81,7 @@ describe("Entity.restore", () => {
       id: "00000000-0000-0000-0000-000000000001",
       label: "x",
       createdAt: new Date("2020-01-01"),
-      createdBy: "u",
+      createdBy: asActorId("u"),
       updatedAt: null,
       updatedBy: null,
       deletedAt: null,

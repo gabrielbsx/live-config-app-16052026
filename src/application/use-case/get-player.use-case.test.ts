@@ -1,10 +1,11 @@
+import { asActorId } from "@/domain/entity/identifier.js";
 import { describe, expect, it } from "vitest";
 import { Player } from "@/domain/entity/player.js";
 import { NotFoundException } from "@/application/exception/not-found.exception.js";
 import { InMemoryPlayerRepository } from "@/infrastructure/database/in-memory/in-memory-player.repository.js";
 import { GetPlayerUseCase } from "./get-player.use-case.js";
 
-const actor = { id: "tester" };
+const actor = { id: asActorId("tester") };
 
 describe("GetPlayerUseCase", () => {
   it("returns DTO when found", async () => {
