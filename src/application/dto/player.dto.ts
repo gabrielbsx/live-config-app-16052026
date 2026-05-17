@@ -7,16 +7,26 @@ export type PlayerDto = Readonly<{
   level: number;
   evolution: string;
   createdAt: string;
+  updatedAt: string | null;
 }>;
 
 export const toPlayerDto = (player: Player): PlayerDto => {
-  const { id, name, nickname, level, evolution, createdAt } = player.props;
-  return {
+  const {
     id,
     name,
     nickname,
     level,
+    evolution,
+    createdAt,
+    updatedAt,
+  } = player.props;
+  return {
+    id,
+    name: name.value,
+    nickname: nickname.value,
+    level: level.value,
     evolution: evolution.value,
     createdAt: createdAt.toISOString(),
+    updatedAt: updatedAt ? updatedAt.toISOString() : null,
   };
 };

@@ -16,9 +16,9 @@ const validInput = {
 describe("Player.fromInput", () => {
   it("constructs valid player", () => {
     const player = Player.fromInput(validInput, actor);
-    expect(player.props.name).toBe("Alice");
-    expect(player.props.nickname).toBe("Aly");
-    expect(player.props.level).toBe(10);
+    expect(player.props.name.value).toBe("Alice");
+    expect(player.props.nickname.value).toBe("Aly");
+    expect(player.props.level.value).toBe(10);
     expect(player.props.evolution.value).toBe("pro");
     expect(player.props.createdBy).toBe("tester");
   });
@@ -37,7 +37,7 @@ describe("Player.fromInput", () => {
       { ...validInput, level: PLAYER_LIMITS.LEVEL_MAX },
       actor,
     );
-    expect(player.props.level).toBe(PLAYER_LIMITS.LEVEL_MAX);
+    expect(player.props.level.value).toBe(PLAYER_LIMITS.LEVEL_MAX);
   });
 
   it("stamps actor on creation", () => {
@@ -61,7 +61,7 @@ describe("Player.update", () => {
 
     player.update({ ...validInput, name: "Bob" }, { id: asActorId("editor") });
 
-    expect(player.props.name).toBe("Bob");
+    expect(player.props.name.value).toBe("Bob");
     expect(player.props.updatedBy).toBe("editor");
     expect(player.props.updatedAt).toBeInstanceOf(Date);
 

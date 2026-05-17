@@ -43,7 +43,7 @@ describe("InMemoryPlayerRepository", () => {
 
       const { items } = await repo.findByPagination(1, 10);
       expect(items).toHaveLength(1);
-      expect(items[0]?.props.level).toBe(5);
+      expect(items[0]?.props.level.value).toBe(5);
     });
   });
 

@@ -36,8 +36,8 @@ describe("UpdatePlayerUseCase", () => {
     });
 
     const updated = await repo.findById(player.props.id);
-    expect(updated?.props.name).toBe("New");
-    expect(updated?.props.level).toBe(50);
+    expect(updated?.props.name.value).toBe("New");
+    expect(updated?.props.level.value).toBe(50);
     expect(updated?.props.evolution.value).toBe("pro");
     expect(updated?.props.updatedBy).toBe("editor");
     expect(updated?.props.createdBy).toBe("creator");
