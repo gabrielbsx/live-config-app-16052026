@@ -1,5 +1,5 @@
-import { ApplicationException } from "../../../domain/exception/application-exception.js";
-import type { Validation } from "../../../presentation/contract/validation.js";
+import { ValidationException } from "@/domain/exception/validation.exception.js";
+import type { Validation } from "@/presentation/contract/validation.js";
 import { z, ZodType } from "zod";
 
 export abstract class ZodValidation<
@@ -11,7 +11,7 @@ export abstract class ZodValidation<
     const result = this._schema.safeParse(input);
 
     if (!result.success) {
-      throw new ApplicationException(result.error.message);
+      throw new ValidationException(result.error.message);
     }
 
     return result.data;
