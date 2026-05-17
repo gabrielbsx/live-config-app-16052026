@@ -11,7 +11,7 @@ const EVOLUTION_ORDER: Readonly<Record<EvolutionStage, number>> = {
   legend: 3,
 };
 
-export class EvolutionValueObject extends ValueObject<EvolutionStage> {
+export class Evolution extends ValueObject<EvolutionStage> {
   constructor(value: EvolutionStage) {
     super(value);
     this.freeze();
@@ -25,9 +25,9 @@ export class EvolutionValueObject extends ValueObject<EvolutionStage> {
     return EVOLUTION_ORDER[next] >= EVOLUTION_ORDER[this.value];
   }
 
-  next(): EvolutionValueObject | null {
+  next(): Evolution | null {
     const idx = EVOLUTION_STAGES.indexOf(this.value);
     if (idx === -1 || idx === EVOLUTION_STAGES.length - 1) return null;
-    return new EvolutionValueObject(EVOLUTION_STAGES[idx + 1]!);
+    return new Evolution(EVOLUTION_STAGES[idx + 1]!);
   }
 }

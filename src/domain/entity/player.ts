@@ -1,4 +1,4 @@
-import { EvolutionValueObject } from "../value-object/evolution.js";
+import { Evolution } from "../value-object/evolution.js";
 import type { EvolutionStage } from "../value-object/evolution.js";
 import { PlayerLevel } from "../value-object/player-level.js";
 import { PlayerName } from "../value-object/player-name.js";
@@ -11,7 +11,7 @@ export interface PlayerProps extends EntityProps<PlayerId> {
   name: PlayerName;
   nickname: PlayerNickname;
   level: PlayerLevel;
-  evolution: EvolutionValueObject;
+  evolution: Evolution;
 }
 
 export type PlayerInput = Readonly<{
@@ -27,7 +27,7 @@ export class Player extends EditableAggregate<PlayerProps, PlayerInput> {
       name: new PlayerName(input.name),
       nickname: new PlayerNickname(input.nickname),
       level: new PlayerLevel(input.level),
-      evolution: new EvolutionValueObject(input.evolution),
+      evolution: new Evolution(input.evolution),
     };
   }
 

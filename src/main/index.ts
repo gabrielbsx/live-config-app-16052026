@@ -74,7 +74,7 @@ async function main() {
 
   const fatalExit = (err: unknown) => {
     logger.fatal({ err }, "Uncaught exception");
-    logger.flush?.();
+    logger.flush();
     server.close();
     setTimeout(() => process.exit(1), FATAL_FLUSH_MS).unref();
   };

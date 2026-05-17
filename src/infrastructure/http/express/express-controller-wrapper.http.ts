@@ -20,7 +20,7 @@ const findEntry = (error: Error): ErrorMapEntry | undefined => {
     if (!parent || parent === Object.prototype) return undefined;
     ctor = parent;
   }
-  return undefined;
+  return undefined; // unreachable; satisfies noImplicitReturns
 };
 
 export class ExpressControllerWrapperHttp {

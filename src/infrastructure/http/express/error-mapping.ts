@@ -5,7 +5,7 @@ import { DomainException } from "@/domain/exception/domain.exception.js";
 import { InfrastructureException } from "@/infrastructure/exception/infrastructure.exception.js";
 import { ValidationException } from "@/presentation/exception/validation.exception.js";
 
-export type ErrorResponseBody = {
+type ErrorResponseBody = {
   error: string;
   message: string;
   issues?: readonly ZodIssue[];
