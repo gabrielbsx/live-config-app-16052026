@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Player } from "@/domain/entity/player.js";
 import { DomainException } from "@/domain/exception/domain.exception.js";
-import { NotFoundException } from "@/domain/exception/not-found.exception.js";
+import { NotFoundException } from "@/application/exception/not-found.exception.js";
 import { PLAYER_LIMITS } from "@/domain/entity/player.constants.js";
 import { InMemoryPlayerRepository } from "@/infrastructure/database/in-memory/in-memory-player.repository.js";
 import { UpdatePlayerUseCase } from "./update-player.use-case.js";

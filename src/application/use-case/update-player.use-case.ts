@@ -1,6 +1,6 @@
 import type { UseCase } from "@/domain/contract/use-case.js";
 import type { Actor } from "@/domain/entity/actor.js";
-import { NotFoundException } from "@/domain/exception/not-found.exception.js";
+import { NotFoundException } from "@/application/exception/not-found.exception.js";
 import { DomainException } from "@/domain/exception/domain.exception.js";
 import { PLAYER_LIMITS } from "@/domain/entity/player.constants.js";
 import { EvolutionValueObject } from "@/domain/value-object/evolution.js";

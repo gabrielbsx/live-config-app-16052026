@@ -1,5 +1,5 @@
 import type { UseCase } from "@/domain/contract/use-case.js";
-import { NotFoundException } from "@/domain/exception/not-found.exception.js";
+import { NotFoundException } from "@/application/exception/not-found.exception.js";
 import type { PlayerRepository } from "@/domain/repository/player.repository.js";
 import { toPlayerDto, type PlayerDto } from "../dto/player.dto.js";
 

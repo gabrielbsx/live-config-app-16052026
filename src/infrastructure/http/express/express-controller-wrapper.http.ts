@@ -1,10 +1,10 @@
 import type { Request, Response } from "express";
 import type { Controller } from "@/presentation/contract/controller.js";
 import { ValidationException } from "@/presentation/exception/validation.exception.js";
-import { NotFoundException } from "@/domain/exception/not-found.exception.js";
+import { NotFoundException } from "@/application/exception/not-found.exception.js";
 import { DomainException } from "@/domain/exception/domain.exception.js";
-import { ApplicationException } from "@/domain/exception/application.exception.js";
-import { InfrastructureException } from "@/domain/exception/infrastructure.exception.js";
+import { ApplicationException } from "@/application/exception/application.exception.js";
+import { InfrastructureException } from "@/infrastructure/exception/infrastructure.exception.js";
 import { logger } from "@/infrastructure/logger/logger.js";
 
 export class ExpressControllerWrapperHttp {
